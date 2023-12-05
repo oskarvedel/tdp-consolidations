@@ -96,7 +96,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
 
         if (empty($current_gd_place_list) || is_bool($current_gd_place_list || ($current_gd_place_list == null))) {
             $current_gd_place_list = array();
-            $current_gd_place_list = array();
+            $current_gd_place_id_list = array();
         } else {
             $current_gd_place_id_list = array_map(function ($post) {
                 return $post->ID;
