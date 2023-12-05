@@ -11,30 +11,48 @@ require_once dirname(__FILE__) . '/consolidate_geolocations.php';
 function tdp_scheduled_consolidations_plugin_activation_function()
 {
     // Check if the scheduled event is already set
-    wp_schedule_event(time(), 'daily', 'tdp_unit_list_daily_event');
-    trigger_error("tdp_unit_list_plugin_daily_function activated", E_USER_WARNING);
+    wp_schedule_event(time(), 'daily', 'tdp_scheduled_consolidations_daily_event');
+    trigger_error("tdp_scheduled_consolidations_plugin_daily_function activated", E_USER_WARNING);
 }
 
-register_activation_hook(__FILE__, 'tdp_unit_list_plugin_activation_function');
+register_activation_hook(__FILE__, 'tdp_scheduled_consolidations_plugin_activation_function');
 
 // Define the deactivation function
 function  tdp_scheduled_consolidations_plugin_deactivation_function()
 {
     // Unschedule the daily event when the plugin or theme is deactivated
-    trigger_error("tdp_unit_list_plugin_daily_function deactivated", E_USER_WARNING);
-    wp_clear_scheduled_hook('tdp_unit_list_daily_event');
+    trigger_error("tdp_scheduled_consolidations_plugin_daily_function deactivated", E_USER_WARNING);
+    wp_clear_scheduled_hook('tdp_scheduled_consolidations_daily_event');
 }
 
 // Hook the activation and deactivation functions
-register_deactivation_hook(__FILE__, 'tdp_unit_list_plugin_deactivation_function');
+register_deactivation_hook(__FILE__, 'tdp_scheduled_consolidations_plugin_deactivation_function');
 
 
 // Hook the daily function to the scheduled event
-add_action('tdp_unit_list_daily_event', 'tdp_unit_list_plugin_daily_function');
+add_action('tdp_scheduled_consolidations_daily_event', 'tdp_scheduled_consolidations_plugin_daily_function');
 
 // Define the function to be executed daily
-function tdp_unit_list_plugin_daily_function()
+function tdp_scheduled_consolidations_plugin_daily_function()
 {
     consolidate_geolocations();
-    trigger_error("tdp_unit_list_plugin_daily_function just ran", E_USER_WARNING);
+    trigger_error("tdp_scheduled_consolidations_plugin_daily_function just ran", E_USER_WARNING);
 }
+
+
+//add a button to the plugin settings page
+function add_consolidate_button($links)
+{
+    $consolidate_link = '<a href="' . esc_url(admin_url('admin-post.php?action=consolidate_geolocations')) . '">Consolidate Geolocations</a>';
+    array_unshift($links, $consolidate_link);
+    return $links;
+}
+add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations-plugin.php', 'add_consolidate_button');
+
+function handle_consolidate_geolocations()
+{
+    consolidate_geolocations();
+    wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
+    exit;
+}
+add_action('admin_post_consolidate_geolocations', 'handle_consolidate_geolocations');
