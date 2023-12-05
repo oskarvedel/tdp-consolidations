@@ -35,6 +35,6 @@ add_action('tdp_unit_list_daily_event', 'tdp_unit_list_plugin_daily_function');
 // Define the function to be executed daily
 function tdp_unit_list_plugin_daily_function()
 {
-    update_statistics_data();
+    consolidate_geolocations();
     trigger_error("tdp_unit_list_plugin_daily_function just ran", E_USER_WARNING);
 }
