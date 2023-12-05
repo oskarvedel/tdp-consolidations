@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: tdp-unit-list-plugin
+ * Plugin Name: tdp-scheduled-consolidations-plugin
  * Version: 1.0
  */
 
