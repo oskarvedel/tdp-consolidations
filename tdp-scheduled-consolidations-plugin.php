@@ -12,7 +12,7 @@ function tdp_scheduled_consolidations_plugin_activation_function()
 {
     // Check if the scheduled event is already set
     wp_schedule_event(time(), 'daily', 'tdp_scheduled_consolidations_daily_event');
-    trigger_error("tdp_scheduled_consolidations_plugin_daily_function activated", E_USER_WARNING);
+    trigger_error("tdp_scheduled_consolidations_plugin_daily_function activated", E_USER_NOTICE);
 }
 
 register_activation_hook(__FILE__, 'tdp_scheduled_consolidations_plugin_activation_function');
@@ -21,7 +21,7 @@ register_activation_hook(__FILE__, 'tdp_scheduled_consolidations_plugin_activati
 function  tdp_scheduled_consolidations_plugin_deactivation_function()
 {
     // Unschedule the daily event when the plugin or theme is deactivated
-    trigger_error("tdp_scheduled_consolidations_plugin_daily_function deactivated", E_USER_WARNING);
+    trigger_error("tdp_scheduled_consolidations_plugin_daily_function deactivated", E_USER_NOTICE);
     wp_clear_scheduled_hook('tdp_scheduled_consolidations_daily_event');
 }
 
@@ -36,7 +36,7 @@ add_action('tdp_scheduled_consolidations_daily_event', 'tdp_scheduled_consolidat
 function tdp_scheduled_consolidations_plugin_daily_function()
 {
     consolidate_geolocations();
-    trigger_error("tdp_scheduled_consolidations_plugin_daily_function just ran", E_USER_WARNING);
+    trigger_error("tdp_scheduled_consolidations_plugin_daily_function just ran", E_USER_NOTICE);
 }
 
 

@@ -8,12 +8,12 @@ function consolidate_geolocations()
     $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
 
     if (empty($geodir_post_locations) || empty($geodir_post_neighbourhoods)) {
-        trigger_error("No geodir_post_locations or geodir_post_neighbourhoods found", E_USER_WARNING);
+        trigger_error("consolidate_geolocations:No geodir_post_locations or geodir_post_neighbourhoods found", E_USER_WARNING);
         return;
     }
 
     if (empty($geolocations)) {
-        trigger_error("No geolocations found", E_USER_WARNING);
+        trigger_error("consolidate_geolocations: No geolocations found", E_USER_WARNING);
         return;
     }
 
@@ -35,7 +35,6 @@ function consolidate_geolocations()
     //set_sublocations($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
     //correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_ids);
     update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
-    trigger_error("consolidated geolocations", E_USER_WARNING);
     trigger_error("consolidated geolocations", E_USER_NOTICE);
 }
 
