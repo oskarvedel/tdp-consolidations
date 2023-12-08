@@ -256,7 +256,7 @@ function create_missing_geolocations($geodir_post_locations_ids, $geodir_post_ne
 function send_email($body, $subject)
 {
     $to = get_option('admin_email');
-    $subject = 'Geolocation(s) created';
+    $subject = $subject;
     $headers = 'From: system@tjekdepot.dk <system@tjekdepot.dk>' . "\r\n";
 
     wp_mail($to, $subject, $body, $headers);
