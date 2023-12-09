@@ -35,6 +35,7 @@ function consolidate_geolocations()
     //set_sublocations($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
     //correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_ids);
     update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
+    set_nearest_geolocations_with_gd_places();
     trigger_error("consolidated geolocations", E_USER_NOTICE);
 }
 
@@ -218,7 +219,7 @@ function create_missing_geolocations($geodir_post_locations_ids, $geodir_post_ne
             update_post_meta($new_post, 'gd_location_id', $id);
             update_post_meta($new_post, 'gd_location_slug', $missing_geodir_post_location_slug);
             update_post_meta($new_post, 'latitude', $missing_geodir_post_location_latitude);
-            update_post_meta($new_post, 'longtitude', $missing_geodir_post_location_longitude);
+            update_post_meta($new_post, 'longitude', $missing_geodir_post_location_longitude);
             update_post_meta($new_post, 'gd_place_list', []);
         }
     }
@@ -242,7 +243,7 @@ function create_missing_geolocations($geodir_post_locations_ids, $geodir_post_ne
             update_post_meta($new_post, 'gd_location_id', $id);
             update_post_meta($new_post, 'gd_location_slug', $missing_geodir_post_hood_slug);
             update_post_meta($new_post, 'latitude', $missing_geodir_post_hood_latitude);
-            update_post_meta($new_post, 'longtitude', $missing_geodir_post_hood_longitude);
+            update_post_meta($new_post, 'longitude', $missing_geodir_post_hood_longitude);
             update_post_meta($new_post, 'parent_location', $missing_geodir_post_hood_parent_location);
             update_post_meta($new_post, 'gd_place_list', []);
         }
@@ -260,6 +261,90 @@ function send_email($body, $subject)
     $headers = 'From: system@tjekdepot.dk <system@tjekdepot.dk>' . "\r\n";
 
     wp_mail($to, $subject, $body, $headers);
+}
+
+function get_nearest_geolocations_with_gd_places_for_single_geolocation($geolocations_ids, $current_geolocation_id, $limit = 5)
+{
+    $distances = array();
+    $current_geodir_title = get_the_title($current_geolocation_id);
+
+    $current_lat = get_post_meta($current_geolocation_id, 'latitude', true);
+    $current_long = get_post_meta($current_geolocation_id, 'longitude', true);
+
+    foreach ($geolocations_ids as $geolocation_id) {
+        $gd_places = get_post_meta($geolocation_id, 'gd_place_list', true);
+        if (empty($gd_places)) {
+            continue;
+        }
+        unset($gd_places);
+
+        $lat = get_post_meta($geolocation_id, 'latitude', true);
+        $long = get_post_meta($geolocation_id, 'longitude', true);
+
+
+        $theta = $current_long - $long;
+        $dist = sin(deg2rad($current_lat)) * sin(deg2rad($lat)) +  cos(deg2rad($current_lat)) * cos(deg2rad($lat)) * cos(deg2rad($theta));
+        $dist = acos($dist);
+        $dist = rad2deg($dist);
+        $kilometers = $dist * 60 * 1.852;
+
+        $distances[$geolocation_id] = $kilometers;
+        unset($lat, $long, $kilometers, $theta, $dist);
+    }
+
+    asort($distances);
+    $distances = array_slice($distances, 0, $limit, true);
+
+    return $distances;
+}
+
+function set_nearest_geolocations_with_gd_places_for_all_geolocations()
+{
+    $paged = 1;
+    $posts_per_page = 10; // Adjust this value based on your server's memory limit
+
+    while (true) {
+        $query = new WP_Query(array(
+            'post_type' => 'geolocations',
+            'posts_per_page' => $posts_per_page,
+            'paged' => $paged,
+            'fields' => 'ids', // Only get post IDs to save memory
+        ));
+
+        if (!$query->have_posts()) {
+            break;
+        }
+
+        foreach ($query->posts as $geolocation_id) {
+            $nearest_geolocations = get_nearest_geolocations_with_gd_places_for_single_geolocation($query->posts, $geolocation_id, 5);
+
+            $nearest_geolocations_keys = array_keys($nearest_geolocations);
+
+            // Set the "nearest_geolocations" metadata field
+            update_post_meta($geolocation_id, 'nearest_geolocations', $nearest_geolocations_keys);
+            trigger_error("nearest geolocations set for geolocation: " . get_the_title($geolocation_id), E_USER_WARNING);
+        }
+
+        trigger_error("paged: " . $paged, E_USER_WARNING);
+        $paged++;
+    }
+    // $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
+    // if (empty($geolocations)) {
+    //     trigger_error("No geolocations found", E_USER_WARNING);
+    //     return;
+    // }
+
+    // foreach ($geolocations as $geolocation) {
+    //     $nearest_geolocations = get_nearest_geolocations_with_gd_places_for_single_geolocation($geolocations, $geolocation, 5);
+
+    //     $nearest_geolocations_keys = array_keys($nearest_geolocations);
+
+    //     // Set the "nearest_geolocations" metadata field
+    //     update_post_meta($geolocation->ID, 'nearest_geolocations', $nearest_geolocations_keys);
+    //     trigger_error("nearest geolocations set for geolocation: " . $geolocation->post_title, E_USER_WARNING);
+    //     unset($nearest_geolocations, $nearest_geolocations_keys);
+    // }
+
 }
 
 // function correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_ids)

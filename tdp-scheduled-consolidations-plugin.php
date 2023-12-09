@@ -40,7 +40,7 @@ function tdp_scheduled_consolidations_plugin_daily_function()
 }
 
 
-//add a button to the plugin settings page
+//add a button to the plugin settings page to consolidate geolocations
 function add_consolidate_button($links)
 {
     $consolidate_link = '<a href="' . esc_url(admin_url('admin-post.php?action=consolidate_geolocations')) . '">Consolidate Geolocations</a>';
@@ -56,3 +56,20 @@ function handle_consolidate_geolocations()
     exit;
 }
 add_action('admin_post_consolidate_geolocations', 'handle_consolidate_geolocations');
+
+// Add a button to the plugin settings page to find the nearest geolocations
+function add_nearest_geolocations_button($links)
+{
+    $nearest_link = '<a href="' . esc_url(admin_url('admin-post.php?action=find_nearest_geolocations')) . '">Find Nearest Geolocations</a>';
+    array_unshift($links, $nearest_link);
+    return $links;
+}
+add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations-plugin.php', 'add_nearest_geolocations_button');
+
+function handle_find_nearest_geolocations()
+{
+    set_nearest_geolocations_with_gd_places_for_all_geolocations();
+    wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
+    exit;
+}
+add_action('admin_post_find_nearest_geolocations', 'handle_find_nearest_geolocations');
