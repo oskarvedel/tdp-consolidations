@@ -283,6 +283,7 @@ function get_nearest_geolocations_with_gd_places_for_single_geolocation($geoloca
 
 
         $theta = $current_long - $long;
+
         $dist = sin(deg2rad($current_lat)) * sin(deg2rad($lat)) +  cos(deg2rad($current_lat)) * cos(deg2rad($lat)) * cos(deg2rad($theta));
         $dist = acos($dist);
         $dist = rad2deg($dist);
@@ -300,51 +301,50 @@ function get_nearest_geolocations_with_gd_places_for_single_geolocation($geoloca
 
 function set_nearest_geolocations_with_gd_places_for_all_geolocations()
 {
-    $paged = 1;
-    $posts_per_page = 10; // Adjust this value based on your server's memory limit
+    // $paged = 1;
+    // $posts_per_page = 10; // Adjust this value based on your server's memory limit
 
-    while (true) {
-        $query = new WP_Query(array(
-            'post_type' => 'geolocations',
-            'posts_per_page' => $posts_per_page,
-            'paged' => $paged,
-            'fields' => 'ids', // Only get post IDs to save memory
-        ));
+    // while (true) {
+    //     $query = new WP_Query(array(
+    //         'post_type' => 'geolocations',
+    //         'posts_per_page' => $posts_per_page,
+    //         'paged' => $paged,
+    //         'fields' => 'ids', // Only get post IDs to save memory
+    //     ));
 
-        if (!$query->have_posts()) {
-            break;
-        }
+    //     if (!$query->have_posts()) {
+    //         break;
+    //     }
 
-        foreach ($query->posts as $geolocation_id) {
-            $nearest_geolocations = get_nearest_geolocations_with_gd_places_for_single_geolocation($query->posts, $geolocation_id, 5);
+    //     foreach ($query->posts as $geolocation_id) {
+    //         $nearest_geolocations = get_nearest_geolocations_with_gd_places_for_single_geolocation($query->posts, $geolocation_id, 5);
 
-            $nearest_geolocations_keys = array_keys($nearest_geolocations);
+    //         $nearest_geolocations_keys = array_keys($nearest_geolocations);
 
-            // Set the "nearest_geolocations" metadata field
-            update_post_meta($geolocation_id, 'nearest_geolocations', $nearest_geolocations_keys);
-            trigger_error("nearest geolocations set for geolocation: " . get_the_title($geolocation_id), E_USER_WARNING);
-        }
+    //         // Set the "nearest_geolocations" metadata field
+    //         update_post_meta($geolocation_id, 'nearest_geolocations', $nearest_geolocations_keys);
+    //         trigger_error("nearest geolocations set for geolocation: " . get_the_title($geolocation_id), E_USER_WARNING);
+    //     }
 
-        trigger_error("paged: " . $paged, E_USER_WARNING);
-        $paged++;
+    //     trigger_error("paged: " . $paged, E_USER_WARNING);
+    //     $paged++;
+    // }
+    $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
+    if (empty($geolocations_ids)) {
+        trigger_error("No geolocations found", E_USER_WARNING);
+        return;
     }
-    // $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
-    // if (empty($geolocations)) {
-    //     trigger_error("No geolocations found", E_USER_WARNING);
-    //     return;
-    // }
 
-    // foreach ($geolocations as $geolocation) {
-    //     $nearest_geolocations = get_nearest_geolocations_with_gd_places_for_single_geolocation($geolocations, $geolocation, 5);
+    foreach ($geolocations_ids as $geolocation_id) {
+        $nearest_geolocations = get_nearest_geolocations_with_gd_places_for_single_geolocation($geolocations_ids, $geolocation_id, 5);
 
-    //     $nearest_geolocations_keys = array_keys($nearest_geolocations);
+        $nearest_geolocations_keys = array_keys($nearest_geolocations);
 
-    //     // Set the "nearest_geolocations" metadata field
-    //     update_post_meta($geolocation->ID, 'nearest_geolocations', $nearest_geolocations_keys);
-    //     trigger_error("nearest geolocations set for geolocation: " . $geolocation->post_title, E_USER_WARNING);
-    //     unset($nearest_geolocations, $nearest_geolocations_keys);
-    // }
-
+        // Set the "nearest_geolocations" metadata field
+        update_post_meta($geolocation_id, 'nearest_geolocations', $nearest_geolocations_keys);
+        trigger_error("nearest geolocations set for geolocation: " . get_the_title($geolocation_id), E_USER_WARNING);
+        unset($nearest_geolocations, $nearest_geolocations_keys);
+    }
 }
 
 // function correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_ids)
