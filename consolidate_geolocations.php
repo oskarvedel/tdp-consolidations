@@ -35,7 +35,7 @@ function consolidate_geolocations()
     //set_sublocations($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
     //correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_ids);
     update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
-    set_nearest_geolocations_with_gd_places();
+    set_nearest_geolocations_with_gd_places_for_all_geolocations();
     trigger_error("consolidated geolocations", E_USER_NOTICE);
 }
 
