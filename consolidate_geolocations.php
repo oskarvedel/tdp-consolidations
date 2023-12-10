@@ -306,7 +306,6 @@ function set_nearest_geolocations_with_gd_places_for_all_geolocations()
         $nearest_geolocation_ids = array_keys($nearest_geolocations);
         update_post_meta($geolocation_id, 'nearest_geolocations', $nearest_geolocation_ids);
 
-        break;
         unset($nearest_geolocations, $nearest_geolocations_keys);
     }
 }
