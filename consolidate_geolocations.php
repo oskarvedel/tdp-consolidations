@@ -59,7 +59,12 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
         }
     }
     //xdebug_break();
-    $geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 5926));
+    //$geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 5926));
+
+    foreach ($geolocations as $geolocation) {
+        $message = "Geolocation post title: " . $geolocation->post_title;
+        trigger_error($message, E_USER_WARNING);
+    }
     foreach ($geolocations as $geolocation) {
         //find gd_places with matching city or neighbourhood
         $gd_places_matching_city_or_neighbourhood = array();
