@@ -76,6 +76,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
         }
 
         if (empty($gd_places_matching_city_or_neighbourhood)) {
+            trigger_error("No gd_places found for geolocation: " . $geolocation->post_title, E_USER_WARNING);
             return;
         }
 
