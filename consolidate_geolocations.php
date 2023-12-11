@@ -62,7 +62,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
     $geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 5926));
     foreach ($geolocations as $geolocation) {
         //find gd_places with matching city or neighbourhood
-        //echo $geolocation->post_title . "\n";
         $gd_places_matching_city_or_neighbourhood = array();
         foreach ($filtered_geodir_gd_place_detail_table as $gd_place_detail) {
             //echo $gd_place_detail->gd_location_slug;
@@ -75,6 +74,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
             }
         }
 
+        trigger_error("compiled list of gd_places for : " . $geolocation->post_title, E_USER_WARNING);
         if (empty($gd_places_matching_city_or_neighbourhood)) {
             trigger_error("No gd_places found for geolocation: " . $geolocation->post_title, E_USER_WARNING);
             return;
