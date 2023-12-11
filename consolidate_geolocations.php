@@ -119,6 +119,7 @@ function update_gd_place_list_for_single_geolocation($current_gd_place_id_list, 
 {
     update_post_meta($geolocation->ID, 'gd_place_list', $new_gd_place_list);
     update_post_meta($geolocation->ID, 'num of gd_places', count($new_gd_place_list));
+    trigger_error("num of gd_places" . count($new_gd_place_list));
     //xdebug_break();
     $gd_place_names = array();
     $message = "updating gd_place list for geolocation: " . $geolocation->post_title . "\n";
