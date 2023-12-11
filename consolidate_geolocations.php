@@ -80,8 +80,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
             return;
         }
 
-        $message = "geolocation: " . $geolocation->post_title . "\n";
-
         $current_gd_place_list = get_post_meta($geolocation->ID, 'gd_place_list', false);
 
         // $message .= "current gd_place_list: ";
@@ -110,6 +108,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
 
         $emailoutput = "";
         $emailoutput = update_gd_place_list_for_single_geolocation($current_gd_place_id_list, $gd_places_matching_city_or_neighbourhood, $geolocation, $emailoutput);
+        trigger_error("updated list of gd_places for : " . $geolocation->post_title, E_USER_WARNING);
         if ($emailoutput != "") {
             send_email($emailoutput, 'gd_place list(s) updated for geolocation(s)');
         }
