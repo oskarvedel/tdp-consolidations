@@ -50,6 +50,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
     //echo "gd_places_table count: " . count($geodir_post_locations_table);
 
     $filtered_geodir_gd_place_detail_table = [];
+    //xdebug_break();
     foreach ($all_gd_places as $gd_place) {
         foreach ($geodir_gd_place_detail_table as $gd_place_detail) {
             if ($gd_place_detail->post_id == $gd_place->ID) {
@@ -57,7 +58,8 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
             }
         }
     }
-
+    //xdebug_break();
+    $geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 6345));
     foreach ($geolocations as $geolocation) {
         //find gd_places with matching city or neighbourhood
         //echo $geolocation->post_title . "\n";
@@ -105,7 +107,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
             }, $current_gd_place_list);
         }
 
-
         $emailoutput = "";
         $emailoutput = update_gd_place_list_for_single_geolocation($current_gd_place_id_list, $gd_places_matching_city_or_neighbourhood, $geolocation, $emailoutput);
         if ($emailoutput != "") {
@@ -116,42 +117,18 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
 
 function update_gd_place_list_for_single_geolocation($current_gd_place_id_list, $new_gd_place_list, $geolocation, $emailoutput)
 {
-    //var_dump($current_gd_place_id_list);
-    //var_dump($new_gd_place_list);
-    //Check if the lists are different
-    // if ($current_gd_place_id_list !== $new_gd_place_list) {
-    //     //if current_gd_place_list is unitialized, initialize it to prevent an error in the array_diff call
-    //     $current_gd_place_id_list = is_bool($current_gd_place_id_list) ? [] : $current_gd_place_id_list;
-    //     //var_dump($current_gd_place_id_list);
-    //     // Find the added IDs
-    //     $different_ids = array_diff($new_gd_place_list, $current_gd_place_id_list);
-    //     if (!empty($different_ids)) {
-    //         $message = 'gd_place_ids updated for location ' . $geolocation->post_title . '/' . $geolocation->ID . "\n";
-    //         $message .= 'Old gd_place_list:';
-    //         foreach ($current_gd_place_id_list as $item) {
-    //             $message .= "\n" . $item;
-    //         }
-    //         $message .= 'New gd_place_list:';
-    //         foreach ($new_gd_place_list as $item) {
-    //             $message .= "\n" . $item;
-    //         }
-    //         $message .= "\n";
-    //         $message .= 'Added or removed IDs: ' . implode(', ', $different_ids) . "\n";
-    //         trigger_error($message, E_USER_WARNING);
-    //         $emailoutput .= $message;
-    //     }
-    // }
     update_post_meta($geolocation->ID, 'gd_place_list', $new_gd_place_list);
     update_post_meta($geolocation->ID, 'num of gd_places', count($new_gd_place_list));
-
+    //xdebug_break();
     $gd_place_names = array();
+    $message = "updating gd_place list for geolocation: " . $geolocation->post_title . "\n";
     foreach ($new_gd_place_list as $gd_place_id) {
         $gd_place = get_post($gd_place_id);
         $gd_place_names[] = $gd_place->post_title;
+        $message .= $gd_place->post_title . "\n";
     }
 
     update_post_meta($geolocation->ID, 'gd_place_names', $gd_place_names);
-
     return $emailoutput;
 }
 
