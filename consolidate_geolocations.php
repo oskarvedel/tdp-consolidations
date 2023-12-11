@@ -59,7 +59,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
         }
     }
     //xdebug_break();
-    $geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 6345));
+    $geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 5926));
     foreach ($geolocations as $geolocation) {
         //find gd_places with matching city or neighbourhood
         //echo $geolocation->post_title . "\n";
