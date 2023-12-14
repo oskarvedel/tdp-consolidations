@@ -50,7 +50,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
     //echo "gd_places_table count: " . count($geodir_post_locations_table);
 
     $filtered_geodir_gd_place_detail_table = [];
-    //xdebug_break();
     foreach ($all_gd_places as $gd_place) {
         foreach ($geodir_gd_place_detail_table as $gd_place_detail) {
             if ($gd_place_detail->post_id == $gd_place->ID) {
@@ -58,7 +57,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
             }
         }
     }
-    //xdebug_break();
     //$geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 5926));
 
     // foreach ($geolocations as $geolocation) {
@@ -113,7 +111,6 @@ function update_gd_place_list_for_single_geolocation($current_gd_place_id_list, 
     update_post_meta($geolocation->ID, 'gd_place_list', $new_gd_place_list);
     update_post_meta($geolocation->ID, 'num of gd_places', count($new_gd_place_list));
     //trigger_error("num of gd_places" . count($new_gd_place_list));
-    //xdebug_break();
     $gd_place_names = array();
     $message = "updating gd_place list for geolocation: " . $geolocation->post_title . "\n";
     foreach ($new_gd_place_list as $gd_place_id) {
