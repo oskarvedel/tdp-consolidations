@@ -2,10 +2,10 @@
 
 function general_consolidations()
 {
-    set_gd_places_within_radiuses_for_all_geolocations([1, 3, 5, 8, 10, 15, 20, 25, 30, 50]);
-    set_all_gd_places_sorted_by_distance_list_for_all_geolocations();
     find_duplicate_geolocations();
     set_nearest_geolocations_with_gd_places_for_all_geolocations();
+    set_all_gd_places_sorted_by_distance_list_for_all_geolocations();
+    set_gd_places_within_radiuses_for_all_geolocations([1, 3, 5, 8, 10, 15, 20, 25, 30, 50]);
     trigger_error("general consolidations done", E_USER_NOTICE);
 }
 
@@ -171,7 +171,8 @@ function set_gd_places_within_radiuses_for_all_geolocations($radiuses)
                 return $distance <= $radius;
             });
             update_post_meta($current_geolocation_id, 'gd_places_within_' . $radius . '_km', $within_radius);
-            $within = get_post_meta($current_geolocation_id, 'gd_places_within_' . $radius . '_km', true);
+            update_post_meta($current_geolocation_id, 'num_of_gd_places_within_' . $radius . '_km', count($within_radius));
+            //$test = get_post_meta($current_geolocation_id, 'gd_places_within_' . $radius . '_km', true);
         }
     }
 }
