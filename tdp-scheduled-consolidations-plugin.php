@@ -76,7 +76,7 @@ add_action('wp_ajax_general_consolidations', 'handle_general_consolidations');
 //add a button to the plugin settings page to consolidate geolocations
 function add_consolidate_button($links)
 {
-    $consolidate_link = '<a href="' . esc_url(admin_url('admin-post.php?action=consolidate_geolocations')) . '">Run all geolocation consolidations</a>';
+    $consolidate_link = '<a href="' . esc_url(admin_url('admin-post.php?action=consolidate_geolocations')) . '">Run ALL geolocation consolidations</a>';
     array_unshift($links, $consolidate_link);
     return $links;
 }
