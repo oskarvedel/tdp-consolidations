@@ -5,8 +5,8 @@ require_once(dirname(__FILE__) . '/geodir_consolidations.php');
 
 function consolidate_geolocations()
 {
-    general_consolidations();
     geodir_consolidations();
+    general_consolidations();
     trigger_error("consolidated geolocations", E_USER_NOTICE);
 }
 

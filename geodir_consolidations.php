@@ -108,7 +108,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
 function update_gd_place_list_for_single_geolocation($current_gd_place_id_list, $new_gd_place_list, $geolocation, $emailoutput)
 {
     update_post_meta($geolocation->ID, 'gd_place_list', $new_gd_place_list);
-    update_post_meta($geolocation->ID, 'num of gd_places', count($new_gd_place_list));
     $gd_place_names = array();
     $message = "updating gd_place list for geolocation: " . $geolocation->post_title . "\n";
     foreach ($new_gd_place_list as $gd_place_id) {
