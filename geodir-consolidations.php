@@ -31,9 +31,9 @@ function geodir_consolidations()
 
     create_missing_geolocations($geodir_post_locations_ids, $geodir_post_neighbourhoods_ids, $geolocations_gd_location_ids, $geodir_post_locations, $geodir_post_neighbourhoods);
     titles_match_check($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
-    update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
     set_geodir_neighbourhoods($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
     set_geodir_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations);
+    update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
     trigger_error("geodir consolidations done", E_USER_NOTICE);
 }
 
@@ -199,8 +199,8 @@ function set_geodir_neighbourhoods()
 {
     $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
     foreach ($geolocations as $geolocation) {
-        // xdebug_break();
         $geodir_neighbourhoods = find_neighbourhoods_for_geolocation($geolocation);
+        array_unique($geodir_neighbourhoods);
         update_post_meta($geolocation->ID, 'geodir_neighbourhoods', $geodir_neighbourhoods);
     }
 }
@@ -210,8 +210,6 @@ function find_neighbourhoods_for_geolocation($geolocation)
     global $wpdb;
     $geodir_post_neighbourhoods = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}geodir_post_neighbourhood", OBJECT);
     $gd_location_id = get_post_meta($geolocation->ID, 'gd_location_id', true);
-    if ($geolocation->ID == "6345") {
-    }
     $geodir_neighbourhoods = [];
     foreach ($geodir_post_neighbourhoods as $neighbourhood) {
         if ($neighbourhood->hood_location_id == $gd_location_id) {
@@ -231,7 +229,6 @@ function find_geolocation_that_matches_with_neighbourhood($hood_id)
         }
     }
 }
-
 
 function set_geodir_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations)
 {
