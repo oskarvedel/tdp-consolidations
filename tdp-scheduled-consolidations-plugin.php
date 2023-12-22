@@ -5,7 +5,9 @@
  * Version: 1.0
  */
 
-require_once dirname(__FILE__) . '/consolidate_geolocations.php';
+require_once(dirname(__FILE__) . '/general-consolidations.php');
+require_once(dirname(__FILE__) . '/geodir-consolidations.php');
+require_once(dirname(__FILE__) . '/seo-consolidations.php');
 
 // Define the activation function
 function tdp_scheduled_consolidations_plugin_activation_function()
@@ -39,7 +41,22 @@ function tdp_scheduled_consolidations_plugin_daily_function()
     trigger_error("tdp_scheduled_consolidations_plugin_daily_function just ran", E_USER_NOTICE);
 }
 
+function consolidate_geolocations()
+{
+    geodir_consolidations();
+    general_consolidations();
+    seo_consolidations();
+    trigger_error("consolidated geolocations", E_USER_NOTICE);
+}
 
+function send_email($body, $subject)
+{
+    $to = get_option('admin_email');
+    $subject = $subject;
+    $headers = 'From: system@tjekdepot.dk <system@tjekdepot.dk>' . "\r\n";
+
+    wp_mail($to, $subject, $body, $headers);
+}
 
 function add_geodir_consolidations_button($links)
 {
@@ -72,6 +89,16 @@ function handle_general_consolidations()
     exit;
 }
 add_action('wp_ajax_general_consolidations', 'handle_general_consolidations');
+
+
+//add a button to the plugin settings page to run seo consolidations
+function add_seo_consolidations_button($links)
+{
+    $seo_link = '<a href="' . admin_url('admin-ajax.php?action=seo_consolidations') . '">Run SEO geolocation consolidations</a>';
+    array_unshift($links, $seo_link);
+    return $links;
+}
+add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations-plugin.php', 'add_seo_consolidations_button');
 
 //add a button to the plugin settings page to consolidate geolocations
 function add_consolidate_button($links)

@@ -29,11 +29,13 @@ function geodir_consolidations()
         return $item->gd_location_id;
     }, $geolocations);
 
+    set_geodir_neighbourhoods($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
+
     create_missing_geolocations($geodir_post_locations_ids, $geodir_post_neighbourhoods_ids, $geolocations_gd_location_ids, $geodir_post_locations, $geodir_post_neighbourhoods);
     titles_match_check($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
-    //correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_gd_location_ids);
     update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
-    set_geodir_neighbourhoods($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
+
+
     set_geodir_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations);
     trigger_error("geodir consolidations done", E_USER_NOTICE);
 }
@@ -86,7 +88,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
 
         $current_gd_place_list = get_post_meta($geolocation->ID, 'gd_place_list', false);
 
-
         if (empty($current_gd_place_list) || is_bool($current_gd_place_list || ($current_gd_place_list == null))) {
             $current_gd_place_list = array();
             $current_gd_place_id_list = array();
@@ -119,7 +120,6 @@ function update_gd_place_list_for_single_geolocation($current_gd_place_id_list, 
     update_post_meta($geolocation->ID, 'gd_place_names', $gd_place_names);
     return $emailoutput;
 }
-
 
 function titles_match_check($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations)
 {
@@ -198,53 +198,46 @@ function create_missing_geolocations($geodir_post_locations_ids, $geodir_post_ne
     }
 }
 
-// function correct_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations_gd_location_ids)
-// {
-//     $emailoutput = "";
-//     foreach ($geolocations_gd_location_ids as $id) {
-//         if (in_array($id, $geodir_post_neighbourhoods_ids)) {
-//             $current_parent_location_id = get_post_meta($id, 'parent_location', true);
-//             $current_parent_location = $geodir_post_locations[array_search($current_parent_location_id, array_column($geodir_post_locations, 'location_id'))]->city;
-//             //trigger_error("current parent location id: " . $current_parent_location_id, E_USER_WARNING);
-//             //$correct_parent_location_id = $geodir_post_neighbourhoods[array_search($id, array_column($geodir_post_neighbourhoods, 'hood_id'))]->hood_location_id;
-//             //trigger_error("correct parent location id:" . $correct_parent_location_id, E_USER_WARNING);
-//             $correct_parent_location_id = $geodir_post_neighbourhoods[array_search($id, array_column($geodir_post_neighbourhoods, 'hood_id'))]->hood_location_id;
-//             $correct_parent_location = $geodir_post_locations[array_search($correct_parent_location_id, array_column($geodir_post_locations, 'location_id'))]->city;
-
-//             if ($current_parent_location_id != $correct_parent_location_id) {
-//                 $hood_title = $geodir_post_neighbourhoods[array_search($id, array_column($geodir_post_neighbourhoods, 'hood_id'))]->hood_name;
-//                 update_post_meta($id, 'parent_location', $correct_parent_location_id);
-
-//                 $message = "geodir_hood:" .  $hood_title   . " had missing or wrong parent location, new parent location set to: " .  $correct_parent_location . " \r\n";
-//                 $message .= "old parent location:" .  $current_parent_location . "\r\n";
-//                 trigger_error($message, E_USER_WARNING);
-//                 $emailoutput .= $message;
-//             }
-//         }
-//     }
-//     if ($emailoutput != "") {
-//         send_email($emailoutput, 'Parent location(s) correct for neighbourhoods');
-//     }
-// }
-
-
-function set_geodir_neighbourhoods($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations)
+function set_geodir_neighbourhoods()
 {
+    $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
     foreach ($geolocations as $geolocation) {
-        $geodir_neighbourhoods = [];
-        foreach ($geodir_post_neighbourhoods as $neighbourhood) {
-            if ($neighbourhood->hood_location_id == $geolocation->gd_location_id) {
-                $geodir_neighbourhoods[] = $neighbourhood->hood_name;
-            }
-        }
+        // xdebug_break();
+        $geodir_neighbourhoods = find_neighbourhoods_for_geolocation($geolocation);
         update_post_meta($geolocation->ID, 'geodir_neighbourhoods', $geodir_neighbourhoods);
+    }
+}
+
+function find_neighbourhoods_for_geolocation($geolocation)
+{
+    global $wpdb;
+    $geodir_post_neighbourhoods = $wpdb->get_results("SELECT * FROM {$wpdb->prefix}geodir_post_neighbourhood", OBJECT);
+    $gd_location_id = get_post_meta($geolocation->ID, 'gd_location_id', true);
+    if ($geolocation->ID == "6345") {
+    }
+    $geodir_neighbourhoods = [];
+    foreach ($geodir_post_neighbourhoods as $neighbourhood) {
+        if ($neighbourhood->hood_location_id == $gd_location_id) {
+            $geodir_neighbourhoods[] = find_geolocation_that_matches_with_neighbourhood($neighbourhood->hood_id);
+        }
+    }
+    return $geodir_neighbourhoods;
+}
+
+function find_geolocation_that_matches_with_neighbourhood($hood_id)
+{
+    $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
+    foreach ($geolocations as $geolocation) {
+        $gd_location_id = get_post_meta($geolocation->ID, 'gd_location_id', true);
+        if ($gd_location_id == $hood_id) {
+            return $geolocation->ID;
+        }
     }
 }
 
 
 function set_geodir_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations)
 {
-
     $emailoutput = "";
     $counter1 = 0;
     $counter2 = 0;
