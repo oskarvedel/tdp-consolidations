@@ -29,13 +29,10 @@ function geodir_consolidations()
         return $item->gd_location_id;
     }, $geolocations);
 
-    set_geodir_neighbourhoods($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
-
     create_missing_geolocations($geodir_post_locations_ids, $geodir_post_neighbourhoods_ids, $geolocations_gd_location_ids, $geodir_post_locations, $geodir_post_neighbourhoods);
     titles_match_check($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
     update_gd_places_for_all_geolocations($geolocations, $geodir_post_locations, $geodir_post_neighbourhoods);
-
-
+    set_geodir_neighbourhoods($geodir_post_locations, $geodir_post_neighbourhoods, $geolocations);
     set_geodir_parent_locations($geodir_post_neighbourhoods, $geodir_post_locations, $geodir_post_neighbourhoods_ids, $geolocations);
     trigger_error("geodir consolidations done", E_USER_NOTICE);
 }
