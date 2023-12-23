@@ -100,6 +100,16 @@ function add_seo_consolidations_button($links)
 }
 add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations-plugin.php', 'add_seo_consolidations_button');
 
+function handle_seo_consolidations()
+{
+    seo_consolidations();
+    wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
+    exit;
+}
+add_action('wp_ajax_seo_consolidations', 'handle_seo_consolidations');
+
+
+
 //add a button to the plugin settings page to consolidate geolocations
 function add_consolidate_button($links)
 {
