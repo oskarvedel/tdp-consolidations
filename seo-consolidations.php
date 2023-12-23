@@ -6,15 +6,10 @@ function seo_consolidations()
     set_geolocations_within_8_km_with_gd_places_within_8_km_sorted_by_distance_for_all_geolocations();
     generate_seo_gd_place_list_for_all_geolocations();
 
-    //generate_seo_schools();
-    trigger_error("seo consolidations done", E_USER_NOTICE);
-
-    //set_all_geolocations_with_gd_places_sorted_by_distance_for_all_geolocations(); //to be developed
-
-    //set_gd_places_within_radiuses_for_all_geolocations([1, 3, 5, 8, 10, 15, 20, 25, 30, 50]);
-
+    //generate_seo_schools(); //to be developed
     //set_50_nearest_geolocations_sorted_by_distance_list_for_all_geolocations(); //to be developed
 
+    trigger_error("seo consolidations done", E_USER_NOTICE);
 }
 
 function set_geolocations_within_8_km_with_gd_places_within_8_km_sorted_by_distance_for_all_geolocations()
