@@ -207,6 +207,9 @@ function get_gd_places_in_neighbourhoods($geolocation_id)
     $gd_neighbourhoods_gd_place_ids = array();
     foreach ($gd_neighbourhoods as $gd_neighbourhood) {
         $gd_neighbourhood_gd_place_ids = get_post_meta($gd_neighbourhood, 'gd_place_list', false);
+        if (empty($gd_neighbourhood_gd_place_ids)) {
+            continue;
+        }
         $gd_neighbourhoods_gd_place_ids = array_merge($gd_neighbourhoods_gd_place_ids, $gd_neighbourhood_gd_place_ids);
     }
     if (empty($gd_neighbourhoods_gd_place_ids)) {
