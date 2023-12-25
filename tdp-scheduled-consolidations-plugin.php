@@ -46,7 +46,7 @@ function consolidate_geolocations()
     geodir_consolidations();
     general_consolidations();
     seo_consolidations();
-    trigger_error("consolidated geolocations", E_USER_NOTICE);
+    trigger_error("ALL consolidations done", E_USER_NOTICE);
 }
 
 function send_email($body, $subject)
