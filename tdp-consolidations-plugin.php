@@ -63,7 +63,7 @@ function add_geodir_consolidations_button($links)
     array_unshift($links, $geodir_link);
     return $links;
 }
-add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations.php', 'add_geodir_consolidations_button');
+add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php', 'add_geodir_consolidations_button');
 
 function handle_geodir_consolidations()
 {
@@ -79,7 +79,7 @@ function add_general_consolidations_button($links)
     array_unshift($links, $general_link);
     return $links;
 }
-add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations.php', 'add_general_consolidations_button');
+add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php', 'add_general_consolidations_button');
 
 function handle_general_consolidations()
 {
@@ -96,7 +96,7 @@ function add_seo_consolidations_button($links)
     array_unshift($links, $seo_link);
     return $links;
 }
-add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations.php', 'add_seo_consolidations_button');
+add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php', 'add_seo_consolidations_button');
 
 function handle_seo_consolidations()
 {
@@ -115,7 +115,7 @@ function add_consolidate_button($links)
     array_unshift($links, $consolidate_link);
     return $links;
 }
-add_filter('plugin_action_links_tdp-scheduled-consolidations/tdp-scheduled-consolidations.php', 'add_consolidate_button');
+add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php', 'add_consolidate_button');
 
 function handle_consolidate_geolocations()
 {
