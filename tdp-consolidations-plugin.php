@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Plugin Name: tdp-scheduled-consolidations-plugin
+ * Plugin Name: tdp-consolidations
  * Version: 1.0
  */
 
