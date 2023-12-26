@@ -13,7 +13,7 @@ require_once(dirname(__FILE__) . '/seo-consolidations.php');
 function tdp_scheduled_consolidations_plugin_activation_function()
 {
     // Check if the scheduled event is already set
-    wp_schedule_event(time(), 'daily', 'tdp_scheduled_consolidations_daily_event');
+    // wp_schedule_event(time(), 'daily', 'tdp_scheduled_consolidations_daily_event');
     trigger_error("tdp_scheduled_consolidations_plugin_daily_function activated", E_USER_NOTICE);
 }
 
