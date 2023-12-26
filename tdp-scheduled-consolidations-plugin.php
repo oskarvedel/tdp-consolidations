@@ -60,7 +60,7 @@ function send_email($body, $subject)
 
 function add_geodir_consolidations_button($links)
 {
-    $geodir_link = '<a href="' . admin_url('admin-ajax.php?action=geodir_consolidations') . '">Run geodir geolocation consolidations</a>';
+    $geodir_link = '<a href="' . admin_url('admin-post.php?action=geodir_consolidations') . '">Run geodir geolocation consolidations</a>';
     array_unshift($links, $geodir_link);
     return $links;
 }
@@ -76,7 +76,7 @@ add_action('wp_ajax_geodir_consolidations', 'handle_geodir_consolidations');
 
 function add_general_consolidations_button($links)
 {
-    $general_link = '<a href="' . admin_url('admin-ajax.php?action=general_consolidations') . '">Run general geolocation consolidations</a>';
+    $general_link = '<a href="' . admin_url('admin-post.php?action=general_consolidations') . '">Run general geolocation consolidations</a>';
     array_unshift($links, $general_link);
     return $links;
 }
@@ -94,7 +94,7 @@ add_action('wp_ajax_general_consolidations', 'handle_general_consolidations');
 //add a button to the plugin settings page to run seo consolidations
 function add_seo_consolidations_button($links)
 {
-    $seo_link = '<a href="' . admin_url('admin-ajax.php?action=seo_consolidations') . '">Run SEO geolocation consolidations</a>';
+    $seo_link = '<a href="' . admin_url('admin-post.php?action=seo_consolidations') . '">Run SEO geolocation consolidations</a>';
     array_unshift($links, $seo_link);
     return $links;
 }
