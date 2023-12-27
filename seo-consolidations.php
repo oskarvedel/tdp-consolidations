@@ -68,7 +68,6 @@ function get_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_
 
         if (empty($lat) || empty($long)) {
             trigger_error("No lat or long found for geolocation_id: $geolocation_id", E_USER_WARNING);
-            xdebug_break();
             continue;
         }
 
