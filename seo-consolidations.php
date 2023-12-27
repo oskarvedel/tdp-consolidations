@@ -35,14 +35,10 @@ function set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_
         $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance = get_post_meta($geolocation_id, 'first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance', false);
         $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance = array_map('intval', $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
         if ($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance == $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance) {
-            trigger_error("matching gw8kwgpw8ksbd already set for geolocation_id: $geolocation_id", E_USER_WARNING);
             continue;
         }
         update_post_meta($geolocation_id, 'first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance', $first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-        $message = "set gw8kwgpw8ksbd for single geolocation: " . $geolocation_id;
-        $message .= "current: " . implode(', ', $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-        $message .= "new: " . implode(', ', $first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-        trigger_error("set gw8kwgpw8ksbd for single geolocation: " . $message, E_USER_NOTICE);
+        trigger_error("set new first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance for single geolocation: " . $geolocation_id, E_USER_NOTICE);
 
         unset($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance, $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
     }
