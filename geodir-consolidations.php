@@ -196,9 +196,7 @@ function set_geodir_neighbourhoods()
         $geodir_neighbourhoods = find_neighbourhoods_for_geolocation($geolocation);
         array_unique($geodir_neighbourhoods);
         $current_geodir_neighbourhoods = get_post_meta($geolocation->ID, 'geodir_neighbourhoods', false);
-        if (empty($current_geodir_neighbourhoods)) {
-            $current_geodir_neighbourhoods = array();
-        }
+
         if ($geodir_neighbourhoods != $current_geodir_neighbourhoods) {
             $message = "updating geodir_neighbourhoods for geolocation: " . $geolocation->post_title . "\n";
             trigger_error($message, E_USER_WARNING);
