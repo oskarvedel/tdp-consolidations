@@ -44,8 +44,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
 
     $all_gd_places = get_posts(array('post_type' => 'gd_place', 'posts_per_page' => -1));
 
-    //echo "gd_places count: " . count($all_gd_places);
-    //echo "gd_places_table count: " . count($geodir_post_locations_table);
 
     $filtered_geodir_gd_place_detail_table = [];
     foreach ($all_gd_places as $gd_place) {
@@ -55,12 +53,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
             }
         }
     }
-    //$geolocations = get_posts(array('post_type' => 'geolocations', 'p' => 5926));
-
-    // foreach ($geolocations as $geolocation) {
-    //     $message = "Geolocation post title: " . $geolocation->post_title;
-    //     trigger_error($message, E_USER_WARNING);
-    // }
 
     foreach ($geolocations as $geolocation) {
         // trigger_error("compiling list of gd_places for : " . $geolocation->post_title, E_USER_WARNING);
@@ -80,22 +72,22 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
         // trigger_error("compiled list of gd_places for : " . $geolocation->post_title, E_USER_WARNING);
         if (empty($gd_places_matching_city_or_neighbourhood)) {
             //trigger_error("No gd_places found for geolocation: " . $geolocation->post_title, E_USER_NOTICE);
-            continue;
+            $gd_places_matching_city_or_neighbourhood = array();
         }
 
         $current_gd_place_list = get_post_meta($geolocation->ID, 'gd_place_list', false);
+        // xdebug_break();
 
-        if (empty($current_gd_place_list) || is_bool($current_gd_place_list || ($current_gd_place_list == null))) {
+        if (empty($current_gd_place_list)) {
             $current_gd_place_list = array();
-            $current_gd_place_id_list = array();
-        } else {
-            $current_gd_place_id_list = array_map(function ($post) {
-                return $post->ID;
-            }, $current_gd_place_list);
+        }
+
+        if (empty($gd_places_matching_city_or_neighbourhood) || empty($current_gd_place_list)) {
+            continue;
         }
 
         $emailoutput = "";
-        $emailoutput = update_gd_place_list_for_single_geolocation($current_gd_place_id_list, $gd_places_matching_city_or_neighbourhood, $geolocation, $emailoutput);
+        $emailoutput = update_gd_place_list_for_single_geolocation($current_gd_place_list, $gd_places_matching_city_or_neighbourhood, $geolocation, $emailoutput);
         // trigger_error("updated list of gd_places for : " . $geolocation->post_title, E_USER_WARNING);
         if ($emailoutput != "") {
             send_email($emailoutput, 'gd_place list(s) updated for geolocation(s)');
@@ -103,8 +95,10 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
     }
 }
 
-function update_gd_place_list_for_single_geolocation($current_gd_place_id_list, $new_gd_place_list, $geolocation, $emailoutput)
+function update_gd_place_list_for_single_geolocation($current_gd_place_list, $new_gd_place_list, $geolocation, $emailoutput)
 {
+    $new_gd_place_list = $current_gd_place_list + $new_gd_place_list;
+    $new_gd_place_list = array_unique($new_gd_place_list);
     update_post_meta($geolocation->ID, 'gd_place_list', $new_gd_place_list);
     $gd_place_names = array();
     $message = "updating gd_place list for geolocation: " . $geolocation->post_title . "\n";
@@ -199,8 +193,19 @@ function set_geodir_neighbourhoods()
 {
     $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
     foreach ($geolocations as $geolocation) {
+        xdebug_break();
         $geodir_neighbourhoods = find_neighbourhoods_for_geolocation($geolocation);
         array_unique($geodir_neighbourhoods);
+        $current_geodir_neighbourhoods = get_post_meta($geolocation->ID, 'geodir_neighbourhoods', false);
+        if (empty($current_geodir_neighbourhoods)) {
+            $current_geodir_neighbourhoods = array();
+        }
+        if ($geodir_neighbourhoods != $current_geodir_neighbourhoods) {
+            $message = "updating geodir_neighbourhoods for geolocation: " . $geolocation->post_title . "\n";
+            trigger_error($message, E_USER_WARNING);
+        }
+        $geodir_neighbourhoods = $geodir_neighbourhoods + $current_geodir_neighbourhoods;
+        $geodir_neighbourhoods = array_unique($geodir_neighbourhoods);
         update_post_meta($geolocation->ID, 'geodir_neighbourhoods', $geodir_neighbourhoods);
     }
 }
