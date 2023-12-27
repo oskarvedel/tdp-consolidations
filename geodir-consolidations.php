@@ -193,7 +193,6 @@ function set_geodir_neighbourhoods()
 {
     $geolocations = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1));
     foreach ($geolocations as $geolocation) {
-        xdebug_break();
         $geodir_neighbourhoods = find_neighbourhoods_for_geolocation($geolocation);
         array_unique($geodir_neighbourhoods);
         $current_geodir_neighbourhoods = get_post_meta($geolocation->ID, 'geodir_neighbourhoods', false);
