@@ -253,7 +253,7 @@ function set_geodir_parent_locations($geodir_post_neighbourhoods, $geodir_post_l
             foreach ($geolocations as $geolocation) {
                 if ($geolocation->gd_location_id == $correct_parent_gd_location_id) {
                     $correct_parent_geolocation_id = $geolocation->ID;
-                    break;
+                    continue;
                 }
             }
 
