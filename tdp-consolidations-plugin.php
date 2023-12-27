@@ -71,7 +71,7 @@ function handle_geodir_consolidations()
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
 }
-add_action('wp_ajax_geodir_consolidations', 'handle_geodir_consolidations');
+add_action('admin_post_geodir_consolidations', 'handle_geodir_consolidations');
 
 function add_general_consolidations_button($links)
 {
@@ -87,7 +87,7 @@ function handle_general_consolidations()
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
 }
-add_action('wp_ajax_general_consolidations', 'handle_general_consolidations');
+add_action('admin_post_general_consolidations', 'handle_general_consolidations');
 
 //add a button to the plugin settings page to run seo consolidations
 function add_seo_consolidations_button($links)
@@ -104,7 +104,7 @@ function handle_seo_consolidations()
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
 }
-add_action('wp_ajax_seo_consolidations', 'handle_seo_consolidations');
+add_action('admin_post_seo_consolidations', 'handle_seo_consolidations');
 
 
 
