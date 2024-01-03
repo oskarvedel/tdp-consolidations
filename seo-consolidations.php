@@ -192,13 +192,8 @@ function generate_seo_gd_place_list_for_all_geolocations()
         $gd_places_within_8_km = get_gd_places_within_radius($geolocation_id, 8);
 
         $title = get_the_title($geolocation_id);
-        if ($geolocation_id == 6078) {
-            trigger_error("gd_places_within_8_km for geolocation: $title:" . count($gd_places_within_8_km), E_USER_NOTICE);
-        }
+
         $gd_places_in_neighbourhoods = get_gd_places_in_neighbourhoods($geolocation_id);
-        if ($geolocation_id == 6078) {
-            trigger_error("gd_places_in_neighbourhoods for geolocation: $title:" . count($gd_places_in_neighbourhoods), E_USER_NOTICE);
-        }
 
         $seo_gd_place_list = [];
 
