@@ -2,7 +2,7 @@
 
 function seo_consolidations()
 {
-    set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
+    //set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
     generate_seo_gd_place_list_for_all_geolocations();
     set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
     //generate_seo_schools(); //to be developed
@@ -38,7 +38,6 @@ function set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_
         if ($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance == $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_ids) {
             continue;
         }
-        xdebug_break();
         $post_title = get_the_title($geolocation_id);
         update_post_meta($geolocation_id, 'first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance', $first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
         trigger_error("set new first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance for single geolocation: " . $post_title, E_USER_NOTICE);
@@ -171,21 +170,6 @@ function get_gd_places_within_radius_sorted_by_distance_for_single_geolocation($
     return $distances;
 }
 
-// function set_gd_places_within_radiuses_for_all_geolocations($radiuses)
-// {
-//     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
-//     foreach ($geolocations_ids as $current_geolocation_id) {
-//         $all_gd_places_sorted_by_distance_list = get_post_meta($current_geolocation_id, 'all_gd_places_sorted_by_distance_list', true);
-//         foreach ($radiuses as $radius) {
-//             $within_radius = array_filter($all_gd_places_sorted_by_distance_list, function ($distance) use ($radius) {
-//                 return $distance <= $radius;
-//             });
-//             update_post_meta($current_geolocation_id, 'gd_places_within_' . $radius . '_km', $within_radius);
-//             $test = get_post_meta($current_geolocation_id, 'gd_places_within_' . $radius . '_km', true);
-//         }
-//     }
-// }
-
 function get_gd_places_within_radius($geolocation, $radius)
 {
     $all_gd_places_sorted_by_distance = get_post_meta($geolocation, 'all_gd_places_sorted_by_distance', true);
@@ -234,24 +218,24 @@ function get_gd_places_in_neighbourhoods($geolocation_id)
     }
 
     //get gd_place_ids in neighbourhoods
-    $gd_neighbourhoods_gd_place_ids = array();
+    $gd_neighbourhoods_gd_places = array();
     foreach ($gd_neighbourhoods as $gd_neighbourhood) {
-        $gd_neighbourhood_gd_place_ids = get_post_meta($gd_neighbourhood, 'gd_place_list', false);
-        if (empty($gd_neighbourhood_gd_place_ids)) {
+        $gd_neighbourhood_gd_places = get_post_meta($gd_neighbourhood['ID'], 'gd_place_list', false);
+        if (empty($gd_neighbourhood_gd_places)) {
             continue;
         }
-        $gd_neighbourhoods_gd_place_ids = array_merge($gd_neighbourhoods_gd_place_ids, $gd_neighbourhood_gd_place_ids);
+        $gd_neighbourhoods_gd_places = array_merge($gd_neighbourhoods_gd_places, $gd_neighbourhood_gd_places);
     }
-    if (empty($gd_neighbourhoods_gd_place_ids)) {
+    if (empty($gd_neighbourhoods_gd_places)) {
         return [];
     }
-    $gd_neighbourhoods_gd_place_ids = array_unique($gd_neighbourhoods_gd_place_ids);
+    $gd_neighbourhoods_gd_places = array_map('unserialize', array_unique(array_map('serialize', $gd_neighbourhoods_gd_places)));
 
     //populate filtered_geodir_gd_place_detail_table
     $filtered_geodir_gd_place_detail_table = [];
-    foreach ($gd_neighbourhoods_gd_place_ids as $gd_place_id) {
+    foreach ($gd_neighbourhoods_gd_places as $gd_place) {
         foreach ($geodir_gd_place_detail_table as $gd_place_detail) {
-            if ($gd_place_detail->post_id == $gd_place_id) {
+            if ($gd_place_detail->post_id == $gd_place['ID']) {
                 $filtered_geodir_gd_place_detail_table[] = $gd_place_detail;
             }
         }
@@ -261,12 +245,12 @@ function get_gd_places_in_neighbourhoods($geolocation_id)
     }
 
     //find distance from geolocation for each gd_place
-    $gd_places_in_neighbourhoods = [];
+    $gd_neighbourhoods_gd_places = [];
     foreach ($filtered_geodir_gd_place_detail_table as $gd_place) {
         $distance = find_distance_from_geolocation($geolocation_id, $gd_place);
-        $gd_places_in_neighbourhoods[$gd_place->post_id] = $distance;
+        $gd_neighbourhoods_gd_places[$gd_place->post_id] = $distance;
     }
-    return $gd_places_in_neighbourhoods;
+    return $gd_neighbourhoods_gd_places;
 }
 
 function find_distance_from_geolocation($geolocation, $gd_place)
