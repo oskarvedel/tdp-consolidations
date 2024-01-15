@@ -71,7 +71,6 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
         }
 
         $current_gd_place_list = get_post_meta($geolocation->ID, 'gd_place_list', false);
-        // xdebug_break();
 
         if (empty($current_gd_place_list)) {
             $current_gd_place_list = array();
