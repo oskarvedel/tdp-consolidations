@@ -258,7 +258,9 @@ function generate_archive_gd_place_list_for_all_geolocations()
         $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
 
         //if list is smaller than 10, add more gd_places
-        $archive_gd_place_list = add_extra_gd_places($archive_gd_place_list, $geolocation_id);
+        if (count($archive_gd_place_list) < 10) {
+            $archive_gd_place_list = add_extra_gd_places($archive_gd_place_list, $geolocation_id);
+        }
 
         update_post_meta($geolocation_id, 'archive_gd_place_list', $archive_gd_place_list);
     }
