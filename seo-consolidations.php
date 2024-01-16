@@ -8,7 +8,7 @@ function seo_consolidations()
     //generate_seo_schools(); //to be developed
     //set_50_nearest_geolocations_sorted_by_distance_list_for_all_geolocations(); //to be developed
 
-    trigger_error("seo consolidations done", E_USER_NOTICE);
+    trigger_error("All SEO consolidations done", E_USER_NOTICE);
 }
 
 function set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations()
