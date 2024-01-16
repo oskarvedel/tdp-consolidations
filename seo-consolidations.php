@@ -198,8 +198,6 @@ function generate_seo_gd_place_list_for_all_geolocations()
     foreach ($geolocations_ids as $geolocation_id) {
         $gd_places_within_8_km = get_gd_places_within_radius($geolocation_id, 8);
 
-        $title = get_the_title($geolocation_id);
-
         $gd_places_in_neighbourhoods = get_gd_places_in_neighbourhoods($geolocation_id);
 
         $seo_gd_place_list = [];
