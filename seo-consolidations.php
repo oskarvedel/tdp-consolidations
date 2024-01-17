@@ -270,6 +270,9 @@ function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
 {
     if (count($archive_gd_place_list) < 10) {
         $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 4);
+        $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
+            return get_post_meta($gd_place_id, 'show_listing', true) == 1;
+        });
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
@@ -279,6 +282,9 @@ function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
     }
     if (count($archive_gd_place_list) < 10) {
         $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 6);
+        $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
+            return get_post_meta($gd_place_id, 'show_listing', true) == 1;
+        });
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
@@ -287,6 +293,9 @@ function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
     }
     if (count($archive_gd_place_list) < 10) {
         $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 8);
+        $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
+            return get_post_meta($gd_place_id, 'show_listing', true) == 1;
+        });
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);

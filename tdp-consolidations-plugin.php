@@ -124,3 +124,4 @@ function handle_consolidate_geolocations()
     exit;
 }
 add_action('admin_post_consolidate_geolocations', 'handle_consolidate_geolocations');
+
