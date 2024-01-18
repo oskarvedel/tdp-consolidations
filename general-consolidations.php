@@ -52,7 +52,6 @@ function add_gd_places_from_neighbourhoods_to_gd_place_list()
 
 function set_gd_place_list_for_special_geolocations()
 {
-    xdebug_break();
     $geolocations_ids = get_posts(array(
         'post_type' => 'geolocations',
         'posts_per_page' => -1,
