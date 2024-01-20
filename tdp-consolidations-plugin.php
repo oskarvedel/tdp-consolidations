@@ -67,6 +67,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_geodir_consolidations()
 {
+    set_time_limit(300);
     geodir_consolidations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
@@ -83,6 +84,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_general_consolidations()
 {
+    set_time_limit(300);
     general_consolidations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
@@ -100,6 +102,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_seo_consolidations()
 {
+    set_time_limit(300);
     seo_consolidations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
@@ -119,24 +122,9 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_consolidate_geolocations()
 {
+    set_time_limit(300);
     consolidate_geolocations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
 }
 add_action('admin_post_consolidate_geolocations', 'handle_consolidate_geolocations');
-
-function add_run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations_button($links)
-{
-    $consolidate_link = '<a href="' . esc_url(admin_url('admin-post.php?action=run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations')) . '">Run ONLY set first 10 geolocations within 8 km with seo gd_place_list sorted by distance for all geolocations</a>';
-    array_unshift($links, $consolidate_link);
-    return $links;
-}
-add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php', 'add_run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations_button');
-
-function handle_run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations()
-{
-    run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
-    wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
-    exit;
-}
-add_action('admin_post_run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations', 'handle_run_only_set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations');
