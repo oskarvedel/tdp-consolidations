@@ -8,6 +8,8 @@ function seo_consolidations()
     trigger_error("generate_archive_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
     generate_seo_gd_place_list_for_all_geolocations();
     trigger_error("generate_seo_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
+    generate_seo_num_of_unis_available_for_all_geolocations();
+    trigger_error("generate_seo_num_of_unis_available_for_all_geolocations done", E_USER_NOTICE);
     set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
     trigger_error("set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
 
@@ -224,6 +226,19 @@ function generate_seo_gd_place_list_for_all_geolocations()
         $seo_gd_place_list = array_keys($seo_gd_place_list);
 
         update_post_meta($geolocation_id, 'seo_gd_place_list', $seo_gd_place_list);
+    }
+}
+
+function generate_seo_num_of_unis_available_for_all_geolocations()
+{
+    $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
+    foreach ($geolocations_ids as $geolocation_id) {
+        $seo_gd_place_list = get_post_meta($geolocation_id, 'seo_gd_place_list', false);
+        $seo_num_of_units_available = 0;
+        foreach ($seo_gd_place_list as $gd_place) {
+            $seo_num_of_units_available += intval(get_post_meta($gd_place['ID'], 'num of units available', true));
+        }
+        update_post_meta($geolocation_id, 'seo_num_of_units_available', $seo_num_of_units_available);
     }
 }
 
