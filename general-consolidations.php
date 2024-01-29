@@ -26,7 +26,7 @@ function find_duplicate_geolocations()
     }
 
     if ($emailoutput != "") {
-        send_email($emailoutput, 'Duplicate geolocation(s) found');
+        email_admin($emailoutput, 'Duplicate geolocation(s) found');
     }
 }
 

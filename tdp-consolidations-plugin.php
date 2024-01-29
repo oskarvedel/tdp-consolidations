@@ -48,7 +48,7 @@ function consolidate_geolocations()
     trigger_error("ALL consolidations done", E_USER_NOTICE);
 }
 
-function send_email($body, $subject)
+function email_admin($body, $subject)
 {
     $to = get_option('admin_email');
     $subject = $subject;

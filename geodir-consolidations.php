@@ -84,7 +84,7 @@ function update_gd_places_for_all_geolocations($geolocations, $geodir_post_locat
         $emailoutput = update_gd_place_list_for_single_geolocation($current_gd_place_list, $gd_places_matching_city_or_neighbourhood, $geolocation, $emailoutput);
         // trigger_error("updated list of gd_places for : " . $geolocation->post_title, E_USER_WARNING);
         if ($emailoutput != "") {
-            send_email($emailoutput, 'gd_place list(s) updated for geolocation(s)');
+            email_admin($emailoutput, 'gd_place list(s) updated for geolocation(s)');
         }
     }
 }
@@ -122,7 +122,7 @@ function titles_match_check($geodir_post_locations, $geolocations)
     }
 
     if ($emailoutput != "") {
-        send_email($emailoutput, 'Mismatching geolocation title(s) found');
+        email_admin($emailoutput, 'Mismatching geolocation title(s) found');
     }
 }
 
@@ -178,7 +178,7 @@ function create_missing_geolocations($geodir_post_locations_ids, $geodir_post_ne
     }
 
     if ($emailoutput != "") {
-        send_email($emailoutput, 'Geolocation(s) created');
+        email_admin($emailoutput, 'Geolocation(s) created');
     }
 }
 
