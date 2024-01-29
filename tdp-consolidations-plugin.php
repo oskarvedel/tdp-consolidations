@@ -52,7 +52,10 @@ function email_admin($body, $subject)
 {
     $to = get_option('admin_email');
     $subject = $subject;
-    $headers = 'From: system@tjekdepot.dk <system@tjekdepot.dk>' . "\r\n";
+    $headers = array(
+        'From: system@tjekdepot.dk <system@tjekdepot.dk>',
+        'Content-Type: text/html; charset=UTF-8',
+    );
 
     wp_mail($to, $subject, $body, $headers);
 }
