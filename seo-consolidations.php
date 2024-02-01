@@ -2,7 +2,6 @@
 
 function seo_consolidations()
 {
-    xdebug_break();
     set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
     trigger_error("set_gd_places_within_radius_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
     generate_archive_gd_place_list_for_all_geolocations();
