@@ -2,16 +2,16 @@
 
 function seo_consolidations()
 {
-    // set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
-    // trigger_error("set_gd_places_within_radius_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
-    // generate_archive_gd_place_list_for_all_geolocations();
-    // trigger_error("generate_archive_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
-    // generate_seo_gd_place_list_for_all_geolocations();
-    // trigger_error("generate_seo_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
+    set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
+    trigger_error("set_gd_places_within_radius_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
+    generate_archive_gd_place_list_for_all_geolocations();
+    trigger_error("generate_archive_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
+    generate_seo_gd_place_list_for_all_geolocations();
+    trigger_error("generate_seo_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
     generate_seo_num_of_units_available_for_all_geolocations();
     trigger_error("generate_seo_num_of_units_available_for_all_geolocations done", E_USER_NOTICE);
-    // set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
-    // trigger_error("set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
+    set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
+    trigger_error("set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
 
     //generate_seo_schools(); //to be developed
     //set_50_nearest_geolocations_sorted_by_distance_list_for_all_geolocations(); //to be developed
@@ -245,7 +245,6 @@ function generate_seo_num_of_units_available_for_all_geolocations()
 
 function generate_archive_gd_place_list_for_all_geolocations()
 {
-    // xdebug_break();
     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
     foreach ($geolocations_ids as $geolocation_id) {
 
