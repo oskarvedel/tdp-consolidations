@@ -407,10 +407,6 @@ function get_gd_places_in_neighbourhoods($geolocation_id)
     if (empty($filtered_geodir_gd_place_detail_table)) {
         return [];
     }
-    // foreach ($gd_neighbourhoods) {
-    //     $gd_places_within_8_km = get_gd_places_within_radius($geolocation_id, 8);
-    // }
-
     //find distance from geolocation for each gd_place
     $gd_neighbourhoods_gd_places = [];
     foreach ($filtered_geodir_gd_place_detail_table as $gd_place) {
@@ -439,23 +435,24 @@ function find_distance_from_geolocation($geolocation, $gd_place)
     return $kilometers;
 }
 
-function generate_seo_schools()
-{
-    $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
-    foreach ($geolocations_ids as $current_geolocation_id) {
-        $gd_places_within_8_km = get_post_meta($current_geolocation_id, 'gd_places_within_8_km', true);
-        $gd_places_within_8_km = array_slice($gd_places_within_8_km, 0, 5, true);
-        $gd_places_within_8_km = array_keys($gd_places_within_8_km);
-        $gd_places_within_8_km = array_map(function ($gd_place_id) {
-            return get_post($gd_place_id);
-        }, $gd_places_within_8_km);
-        $gd_places_within_8_km = array_filter($gd_places_within_8_km, function ($gd_place) {
-            return $gd_place->post_type == 'gd_place';
-        });
-        $gd_places_within_8_km = array_map(function ($gd_place) {
-            return $gd_place->post_title;
-        }, $gd_places_within_8_km);
-        $gd_places_within_8_km = implode(', ', $gd_places_within_8_km);
-        update_post_meta($current_geolocation_id, 'seo_schools', $gd_places_within_8_km);
-    }
-}
+//to be developed
+// function generate_seo_schools()
+// {
+//     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
+//     foreach ($geolocations_ids as $current_geolocation_id) {
+//         $gd_places_within_8_km = get_post_meta($current_geolocation_id, 'gd_places_within_8_km', true);
+//         $gd_places_within_8_km = array_slice($gd_places_within_8_km, 0, 5, true);
+//         $gd_places_within_8_km = array_keys($gd_places_within_8_km);
+//         $gd_places_within_8_km = array_map(function ($gd_place_id) {
+//             return get_post($gd_place_id);
+//         }, $gd_places_within_8_km);
+//         $gd_places_within_8_km = array_filter($gd_places_within_8_km, function ($gd_place) {
+//             return $gd_place->post_type == 'gd_place';
+//         });
+//         $gd_places_within_8_km = array_map(function ($gd_place) {
+//             return $gd_place->post_title;
+//         }, $gd_places_within_8_km);
+//         $gd_places_within_8_km = implode(', ', $gd_places_within_8_km);
+//         update_post_meta($current_geolocation_id, 'seo_schools', $gd_places_within_8_km);
+//     }
+// }
