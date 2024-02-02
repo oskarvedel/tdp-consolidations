@@ -245,18 +245,22 @@ function generate_seo_num_of_unis_available_for_all_geolocations()
 
 function generate_archive_gd_place_list_for_all_geolocations()
 {
+    // xdebug_break();
     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
     foreach ($geolocations_ids as $geolocation_id) {
 
         // $is_special_location = get_post_meta($geolocation_id, 'special_location', true);
 
         //get all gd_places for geolocation
-        $gd_place_list_ids = get_post_meta($geolocation_id, 'gd_place_list', true);
+        $gd_place_list_ids = get_post_meta($geolocation_id, 'gd_place_list', false);
 
         //if gd_place_list_ids is a single value, make it an array
         if (!is_array($gd_place_list_ids)) {
             $gd_place_list_ids = [$gd_place_list_ids];
         }
+
+        //make each value an integer
+        $gd_place_list_ids = array_map('intval', $gd_place_list_ids);
 
         //get all gd_places within 2 km
         $gd_places_within_2_km = get_gd_places_within_radius($geolocation_id, 2);
