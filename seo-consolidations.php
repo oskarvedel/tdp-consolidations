@@ -2,6 +2,7 @@
 
 function seo_consolidations()
 {
+    // xdebug_break();
     set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
     trigger_error("set_gd_places_within_radius_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
     generate_archive_gd_place_list_for_all_geolocations();
@@ -204,7 +205,6 @@ function get_gd_places_within_radius($geolocation, $radius)
     $gd_places_within_radius = array_filter($all_gd_places_sorted_by_distance, function ($distance) use ($radius) {
         return $distance <= $radius;
     });
-    //$gd_places_within_radius = array_keys($all_gd_places_sorted_by_distance);
 
     return $gd_places_within_radius;
 }
@@ -292,40 +292,51 @@ function generate_archive_gd_place_list_for_all_geolocations()
 
 function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
 {
-    if (count($archive_gd_place_list) < 10) {
-        $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 4);
+    $radius = 3; // Initial radius
+    while (count($archive_gd_place_list) < 8) {
+        $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, $radius);
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
-        // $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
-        //     return get_post_meta($gd_place_id, 'show_listing', true) == 1;
-        // });
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
         $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
-        //for 4 km radius, sort the featured gd_places to the top of the main list
         $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
+
+        $radius++; // Increment the radius for the next run
     }
-    if (count($archive_gd_place_list) < 10) {
-        $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 6);
-        $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
-        // $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
-        //     return get_post_meta($gd_place_id, 'show_listing', true) == 1;
-        // });
-        $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
-        $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
-        $gd_places_within_radius_ids = sort_featured_gd_places_to_top($gd_places_within_radius_ids);
-        $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
-    }
-    if (count($archive_gd_place_list) < 10) {
-        $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 8);
-        $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
-        // $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
-        //     return get_post_meta($gd_place_id, 'show_listing', true) == 1;
-        // });
-        $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
-        $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
-        $gd_places_within_radius_ids = sort_featured_gd_places_to_top($gd_places_within_radius_ids);
-        $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
-    }
+    // if (count($archive_gd_place_list) < 10) {
+    //     $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 4);
+    //     $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
+    //     // $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
+    //     //     return get_post_meta($gd_place_id, 'show_listing', true) == 1;
+    //     // });
+    //     $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
+    //     $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
+    //     $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
+    //     //for 4 km radius, sort the featured gd_places to the top of the main list
+    //     $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
+    // }
+    // if (count($archive_gd_place_list) < 10) {
+    //     $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 6);
+    //     $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
+    //     // $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
+    //     //     return get_post_meta($gd_place_id, 'show_listing', true) == 1;
+    //     // });
+    //     $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
+    //     $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
+    //     $gd_places_within_radius_ids = sort_featured_gd_places_to_top($gd_places_within_radius_ids);
+    //     $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
+    // }
+    // if (count($archive_gd_place_list) < 10) {
+    //     $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, 8);
+    //     $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
+    //     // $gd_places_within_radius = array_filter($gd_places_within_radius, function ($gd_place_id) {
+    //     //     return get_post_meta($gd_place_id, 'show_listing', true) == 1;
+    //     // });
+    //     $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
+    //     $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
+    //     $gd_places_within_radius_ids = sort_featured_gd_places_to_top($gd_places_within_radius_ids);
+    //     $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
+    // }
     //slice the array to 10
     $archive_gd_place_list = array_slice($archive_gd_place_list, 0, 10);
     return $archive_gd_place_list;
