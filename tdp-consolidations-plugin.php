@@ -70,7 +70,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_geodir_consolidations()
 {
-    set_time_limit(3000);
+    set_time_limit(5000);
     geodir_consolidations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
@@ -87,7 +87,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_general_consolidations()
 {
-    set_time_limit(3000);
+    set_time_limit(5000);
     general_consolidations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
@@ -105,7 +105,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_seo_consolidations()
 {
-    set_time_limit(3000);
+    set_time_limit(5000);
     seo_consolidations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
@@ -125,7 +125,7 @@ add_filter('plugin_action_links_tdp-consolidations/tdp-consolidations-plugin.php
 
 function handle_consolidate_geolocations()
 {
-    set_time_limit(3000);
+    set_time_limit(5000);
     consolidate_geolocations();
     wp_redirect(admin_url('plugins.php?s=tdp&plugin_status=all'));
     exit;
