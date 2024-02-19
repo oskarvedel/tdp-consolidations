@@ -275,6 +275,9 @@ function generate_archive_gd_place_list_for_all_geolocations()
         //sort alle gd_places with available units to the top
         $archive_gd_place_list = sort_gd_places_with_units_to_top($archive_gd_place_list);
 
+        //sort gd_places with show units to the top
+        $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
+
         //sort all the partner gd_places to the top
         $archive_gd_place_list = sort_partner_gd_places_to_top($archive_gd_place_list);
 
@@ -299,6 +302,7 @@ function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
         $gd_places_within_radius_ids = sort_gd_places_with_units_to_top($gd_places_within_radius_ids);
+        $gd_places_within_radius_ids = sort_gd_places_with_units_and_show_units_true_to_top($gd_places_within_radius_ids);
         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
         $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
         $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
@@ -360,6 +364,23 @@ function sort_gd_places_with_units_to_top($archive_gd_place_list)
         }
 
         return ($unitsA > $unitsB) ? -1 : 1;
+    });
+    return $archive_gd_place_list;
+}
+
+function sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list)
+{
+    usort($archive_gd_place_list, function ($a, $b) {
+        $unitsA = intval(get_post_meta($a, 'num of units available', true));
+        $unitsB = intval(get_post_meta($b, 'num of units available', true));
+        $showUnitsA = get_post_meta($a, 'show_units', true) === '1' ? 1 : 0;
+        $showUnitsB = get_post_meta($b, 'show_units', true) === '1' ? 1 : 0;
+
+        if ($showUnitsA == $showUnitsB) {
+            return 0;
+        }
+
+        return ($showUnitsA > $showUnitsB) ? -1 : 1;
     });
     return $archive_gd_place_list;
 }
