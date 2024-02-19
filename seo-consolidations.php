@@ -247,6 +247,7 @@ function generate_archive_gd_place_list_for_all_geolocations()
 {
     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
     foreach ($geolocations_ids as $geolocation_id) {
+        trigger_error("generating archive_gd_place_list for: $geolocation_id", E_USER_NOTICE);
 
         //get all gd_places for geolocation
         $gd_place_list_ids = get_post_meta($geolocation_id, 'gd_place_list', false);
