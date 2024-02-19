@@ -287,6 +287,8 @@ function generate_archive_gd_place_list_for_all_geolocations()
         }
 
         update_post_meta($geolocation_id, 'archive_gd_place_list', $archive_gd_place_list);
+
+        trigger_error("archive_gd_place_list updated for: $geolocation_id", E_USER_NOTICE);
     }
 }
 
