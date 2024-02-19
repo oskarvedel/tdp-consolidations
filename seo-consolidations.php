@@ -3,7 +3,7 @@
 function seo_consolidations()
 {
     // xdebug_break();
-    // set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
+    set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
     trigger_error("set_gd_places_within_radius_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
     generate_archive_gd_place_list_for_all_geolocations();
     trigger_error("generate_archive_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
@@ -245,7 +245,6 @@ function generate_seo_num_of_units_available_for_all_geolocations()
 
 function generate_archive_gd_place_list_for_all_geolocations()
 {
-    xdebug_break();
     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
     foreach ($geolocations_ids as $geolocation_id) {
 
