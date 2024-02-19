@@ -3,7 +3,7 @@
 function seo_consolidations()
 {
     // xdebug_break();
-    set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
+    // set_gd_places_within_radius_sorted_by_distance_for_all_geolocations(40);
     trigger_error("set_gd_places_within_radius_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
     generate_archive_gd_place_list_for_all_geolocations();
     trigger_error("generate_archive_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
@@ -245,6 +245,7 @@ function generate_seo_num_of_units_available_for_all_geolocations()
 
 function generate_archive_gd_place_list_for_all_geolocations()
 {
+    xdebug_break();
     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
     foreach ($geolocations_ids as $geolocation_id) {
 
@@ -272,9 +273,6 @@ function generate_archive_gd_place_list_for_all_geolocations()
         $archive_gd_place_list = array_merge($gd_place_list_ids, $gd_places_within_2_km_ids, $gd_places_in_neighbourhoods_ids);
         $archive_gd_place_list = array_unique($archive_gd_place_list);
 
-        //sort alle gd_places with available units to the top
-        $archive_gd_place_list = sort_gd_places_with_units_to_top($archive_gd_place_list);
-
         //sort gd_places with show units to the top
         $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
 
@@ -300,7 +298,6 @@ function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
         $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, $radius);
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
-        $gd_places_within_radius_ids = sort_gd_places_with_units_to_top($gd_places_within_radius_ids);
         $gd_places_within_radius_ids = sort_gd_places_with_units_and_show_units_true_to_top($gd_places_within_radius_ids);
         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
         $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
