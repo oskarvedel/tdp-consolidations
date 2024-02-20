@@ -246,57 +246,83 @@ function generate_seo_num_of_units_available_for_all_geolocations()
 function generate_archive_gd_place_list_for_all_geolocations()
 {
     $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => -1, 'fields' => 'ids'));
-    foreach ($geolocations_ids as $geolocation_id) {
-        trigger_error("generating archive_gd_place_list for: $geolocation_id", E_USER_NOTICE);
+    $total_geolocations = count($geolocations_ids);
+    $batch_size = 10; // Adjust based on your environment and needs
+    $num_batches = ceil($total_geolocations / $batch_size);
+    global $wpdb;
 
-        //get all gd_places for geolocation
-        $gd_place_list_ids = get_post_meta($geolocation_id, 'gd_place_list', false);
+    for ($batch = 0; $batch < $num_batches; $batch++) {
+        // Calculate the offset for the current batch
+        $offset = $batch * $batch_size;
 
-        //if gd_place_list_ids is a single value, make it an array
-        if (!is_array($gd_place_list_ids)) {
-            $gd_place_list_ids = [$gd_place_list_ids];
+        // Get the geolocations for the current batch
+        $geolocations_ids = get_posts(array('post_type' => 'geolocations', 'posts_per_page' => $batch_size, 'offset' => $offset, 'fields' => 'ids'));
+
+        foreach ($geolocations_ids as $geolocation_id) {
+            // Process each geolocation ID
+            generate_archive_gd_place_list_for_single_geolocation($geolocation_id);
         }
 
-        //make each value an integer
-        $gd_place_list_ids = array_map('intval', $gd_place_list_ids);
-
-        //get all gd_places within 2 km
-        $gd_places_within_2_km = get_gd_places_within_radius($geolocation_id, 2);
-        $gd_places_within_2_km_ids = array_keys($gd_places_within_2_km);
-
-        //get all gd_places in neighbourhoods
-        $gd_places_in_neighbourhoods = get_gd_places_in_neighbourhoods($geolocation_id);
-        $gd_places_in_neighbourhoods_ids = array_keys($gd_places_in_neighbourhoods);
-
-        //combine all gd_place lists
-        $archive_gd_place_list = [];
-        $archive_gd_place_list = array_merge($gd_place_list_ids, $gd_places_within_2_km_ids, $gd_places_in_neighbourhoods_ids);
-        $archive_gd_place_list = array_unique($archive_gd_place_list);
-
-        //sort gd_places with show units to the top
-        $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
-
-        //sort all the partner gd_places to the top
-        $archive_gd_place_list = sort_partner_gd_places_to_top($archive_gd_place_list);
-
-        //sort all featured gd_places to the top
-        $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
-
-        //if list is smaller than 10, add more gd_places
-        if (count($archive_gd_place_list) < 8) {
-            $archive_gd_place_list = add_extra_gd_places($archive_gd_place_list, $geolocation_id);
-        }
-
-        update_post_meta($geolocation_id, 'archive_gd_place_list', $archive_gd_place_list);
-
-        trigger_error("archive_gd_place_list updated for: $geolocation_id", E_USER_NOTICE);
+        // Free up memory after each batch
+        unset($geolocations_ids);
     }
+}
+
+
+function generate_archive_gd_place_list_for_single_geolocation($geolocation_id)
+{
+    // if ($geolocation_id == 6234) {
+    //     xdebug_break();
+    // }
+    trigger_error("generating archive_gd_place_list for: $geolocation_id", E_USER_NOTICE);
+
+    //get all gd_places for geolocation
+    $gd_place_list_ids = get_post_meta($geolocation_id, 'gd_place_list', false);
+
+    //if gd_place_list_ids is a single value, make it an array
+    if (!is_array($gd_place_list_ids)) {
+        $gd_place_list_ids = [$gd_place_list_ids];
+    }
+
+    //make each value an integer
+    $gd_place_list_ids = array_map('intval', $gd_place_list_ids);
+
+    //get all gd_places within 2 km
+    $gd_places_within_2_km = get_gd_places_within_radius($geolocation_id, 2);
+    $gd_places_within_2_km_ids = array_keys($gd_places_within_2_km);
+
+    //get all gd_places in neighbourhoods
+    $gd_places_in_neighbourhoods = get_gd_places_in_neighbourhoods($geolocation_id);
+    $gd_places_in_neighbourhoods_ids = array_keys($gd_places_in_neighbourhoods);
+
+    //combine all gd_place lists
+    $archive_gd_place_list = [];
+    $archive_gd_place_list = array_merge($gd_place_list_ids, $gd_places_within_2_km_ids, $gd_places_in_neighbourhoods_ids);
+    $archive_gd_place_list = array_unique($archive_gd_place_list);
+
+    //sort gd_places with show units to the top
+    $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
+
+    //sort all the partner gd_places to the top
+    $archive_gd_place_list = sort_partner_gd_places_to_top($archive_gd_place_list);
+
+    //sort all featured gd_places to the top
+    $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
+
+    //if list is smaller than 10, add more gd_places
+    if (count($archive_gd_place_list) < 8) {
+        $archive_gd_place_list = add_extra_gd_places($archive_gd_place_list, $geolocation_id);
+    }
+
+    update_post_meta($geolocation_id, 'archive_gd_place_list', $archive_gd_place_list);
+
+    trigger_error("archive_gd_place_list updated for: $geolocation_id", E_USER_NOTICE);
 }
 
 function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
 {
     $radius = 3; // Initial radius
-    while (count($archive_gd_place_list) < 8) {
+    while (count($archive_gd_place_list) < 8 && $radius <= 40) {
         $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, $radius);
         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
@@ -305,7 +331,9 @@ function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
         $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
         $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
 
-        $radius++; // Increment the radius for the next run
+        $radius = $radius + 4; // Increment the radius for the next run
+
+        unset($gd_places_within_radius, $gd_places_within_radius_ids);
     }
     //slice the array to 10
     $archive_gd_place_list = array_slice($archive_gd_place_list, 0, 10);
