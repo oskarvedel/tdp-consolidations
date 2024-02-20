@@ -268,12 +268,8 @@ function generate_archive_gd_place_list_for_all_geolocations()
     }
 }
 
-
 function generate_archive_gd_place_list_for_single_geolocation($geolocation_id)
 {
-    // if ($geolocation_id == 6234) {
-    //     xdebug_break();
-    // }
     trigger_error("generating archive_gd_place_list for: $geolocation_id", E_USER_NOTICE);
 
     //get all gd_places for geolocation
@@ -300,19 +296,29 @@ function generate_archive_gd_place_list_for_single_geolocation($geolocation_id)
     $archive_gd_place_list = array_merge($gd_place_list_ids, $gd_places_within_2_km_ids, $gd_places_in_neighbourhoods_ids);
     $archive_gd_place_list = array_unique($archive_gd_place_list);
 
-    //sort gd_places with show units to the top
-    $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
+    //remove all listings with show_listing false
+    $archive_gd_place_list = array_filter($archive_gd_place_list, function ($gd_place_id) {
+        return get_post_meta($gd_place_id, 'show_listing', true) === '1';
+    });
 
-    //sort all the partner gd_places to the top
-    $archive_gd_place_list = sort_partner_gd_places_to_top($archive_gd_place_list);
+    // //sort gd_places with show units to the top
+    // $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
 
-    //sort all featured gd_places to the top
-    $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
+    // //sort all the partner gd_places to the top
+    // $archive_gd_place_list = sort_partner_gd_places_to_top($archive_gd_place_list);
+
+    // //sort all featured gd_places to the top
+    // $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
 
     //if list is smaller than 10, add more gd_places
     if (count($archive_gd_place_list) < 8) {
         $archive_gd_place_list = add_extra_gd_places($archive_gd_place_list, $geolocation_id);
+        $archive_gd_place_list = array_filter($archive_gd_place_list, function ($gd_place_id) {
+            return get_post_meta($gd_place_id, 'show_listing', true) === '1';
+        });
     }
+
+    $archive_gd_place_list = sort_gd_places($archive_gd_place_list);
 
     update_post_meta($geolocation_id, 'archive_gd_place_list', $archive_gd_place_list);
 
@@ -321,22 +327,62 @@ function generate_archive_gd_place_list_for_single_geolocation($geolocation_id)
 
 function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
 {
-    $radius = 3; // Initial radius
+    $radius = 3; // Consider starting with the last known radius that provided results
     while (count($archive_gd_place_list) < 8 && $radius <= 40) {
-        $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, $radius);
-        $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
-        $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
-        $gd_places_within_radius_ids = sort_gd_places_with_units_and_show_units_true_to_top($gd_places_within_radius_ids);
-        $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
-        $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
-        $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
-
-        $radius = $radius + 4; // Increment the radius for the next run
-
-        unset($gd_places_within_radius, $gd_places_within_radius_ids);
+        $extra_places = get_gd_places_within_radius($geolocation_id, $radius);
+        $extra_places = array_filter(array_keys($extra_places), function ($gd_place_id) {
+            return get_post_meta($gd_place_id, 'show_listing', true) === '1';
+        });
+        foreach ($extra_places as $place_id) {
+            if (!in_array($place_id, $archive_gd_place_list)) {
+                $archive_gd_place_list[] = $place_id;
+                if (count($archive_gd_place_list) >= 8) break;
+            }
+        }
+        $radius = $radius + 3; // Increment the radius for the next run
     }
-    //slice the array to 10
+    // Ensure the list is sliced to the maximum size required
     $archive_gd_place_list = array_slice($archive_gd_place_list, 0, 10);
+    return $archive_gd_place_list;
+}
+
+// function add_extra_gd_places($archive_gd_place_list, $geolocation_id)
+// {
+//     $radius = 3; // Initial radius
+//     while (count($archive_gd_place_list) < 8 && $radius <= 40) {
+//         $gd_places_within_radius = get_gd_places_within_radius($geolocation_id, $radius);
+//         $gd_places_within_radius_ids = array_keys($gd_places_within_radius);
+//         $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
+//         $gd_places_within_radius_ids = sort_gd_places_with_units_and_show_units_true_to_top($gd_places_within_radius_ids);
+//         $gd_places_within_radius_ids = sort_partner_gd_places_to_top($gd_places_within_radius_ids);
+//         $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
+//         $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
+
+//         $radius = $radius + 4; // Increment the radius for the next run
+
+//         unset($gd_places_within_radius, $gd_places_within_radius_ids);
+//     }
+//     //slice the array to 10
+//     $archive_gd_place_list = array_slice($archive_gd_place_list, 0, 10);
+//     return $archive_gd_place_list;
+// }
+
+function sort_gd_places($archive_gd_place_list)
+{
+    usort($archive_gd_place_list, function ($a, $b) {
+        // Assume get_post_meta calls return '1' for true and anything else for false
+        $featuredA = get_post_meta($a, 'featured', true) === '1' ? 3 : 0;
+        $partnerA = get_post_meta($a, 'partner', true) === '1' ? 2 : 0;
+        $showUnitsA = get_post_meta($a, 'show_units', true) === '1' ? 1 : 0;
+        $scoreA = $partnerA + $featuredA + $showUnitsA;
+
+        $featuredB = get_post_meta($b, 'featured', true) === '1' ? 3 : 0;
+        $partnerB = get_post_meta($b, 'partner', true) === '1' ? 2 : 0;
+        $showUnitsB = get_post_meta($b, 'show_units', true) === '1' ? 1 : 0;
+        $scoreB = $partnerB + $featuredB + $showUnitsB;
+
+        return $scoreB <=> $scoreA; // Use spaceship operator for PHP 7.0+
+    });
     return $archive_gd_place_list;
 }
 
