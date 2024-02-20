@@ -11,8 +11,8 @@ function seo_consolidations()
     trigger_error("generate_seo_gd_place_list_for_all_geolocations done", E_USER_NOTICE);
     generate_seo_num_of_units_available_for_all_geolocations();
     trigger_error("generate_seo_num_of_units_available_for_all_geolocations done", E_USER_NOTICE);
-    set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
-    trigger_error("set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
+    set_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations();
+    trigger_error("set_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations done", E_USER_NOTICE);
 
     //generate_seo_schools(); //to be developed
     //set_50_nearest_geolocations_sorted_by_distance_list_for_all_geolocations(); //to be developed
@@ -20,7 +20,7 @@ function seo_consolidations()
     trigger_error("All SEO consolidations done", E_USER_NOTICE);
 }
 
-function set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations()
+function set_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_for_all_geolocations()
 {
     $batch_size = 10; // Adjust this to a suitable size
 
@@ -41,30 +41,30 @@ function set_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_
         // Loop through the geolocations in the current batch
         foreach ($batch as $geolocation_id) {
             $counter++;
-            $first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance = get_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_single_geolocation($geolocations_ids, $geolocation_id);
-            $first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance = array_keys($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-            if (empty($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance)) {
+            $first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance = get_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_for_single_geolocation($geolocations_ids, $geolocation_id);
+            $first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance = array_keys($first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance);
+            if (empty($first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance)) {
                 continue;
             }
 
-            $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_ids = get_post_meta($geolocation_id, 'first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance', true);
-            // $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_ids = array_map(function ($current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance) {
-            //     return intval($current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-            // }, $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-            // $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_ids = array_map('intval', $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_ids);
-            if ($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance == $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_ids) {
+            $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_ids = get_post_meta($geolocation_id, 'first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance', true);
+            // $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_ids = array_map(function ($current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance) {
+            //     return intval($current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance);
+            // }, $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance);
+            // $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_ids = array_map('intval', $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_ids);
+            if ($first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance == $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_ids) {
                 continue;
             }
             $post_title = get_the_title($geolocation_id);
-            update_post_meta($geolocation_id, 'first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance', $first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
-            trigger_error("set new first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance for single geolocation: " . $post_title, E_USER_NOTICE);
+            update_post_meta($geolocation_id, 'first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance', $first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance);
+            trigger_error("set new first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance for single geolocation: " . $post_title, E_USER_NOTICE);
 
-            unset($first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance, $current_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance);
+            unset($first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance, $current_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance);
         }
     }
 }
 
-function get_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_distance_for_single_geolocation($geolocations_ids, $current_geolocation_id, $radius = 8)
+function get_first_10_geolocations_within_20_km_with_seo_gd_place_list_sorted_by_distance_for_single_geolocation($geolocations_ids, $current_geolocation_id, $radius = 20)
 {
     $distances = array();
 
@@ -116,7 +116,6 @@ function get_first_10_geolocations_within_8_km_with_seo_gd_place_list_sorted_by_
 
     return $distances;
 }
-
 
 function set_gd_places_within_radius_sorted_by_distance_for_all_geolocations($radius)
 {
@@ -301,14 +300,6 @@ function generate_archive_gd_place_list_for_single_geolocation($geolocation_id)
         return get_post_meta($gd_place_id, 'show_listing', true) === '1';
     });
 
-    // //sort gd_places with show units to the top
-    // $archive_gd_place_list = sort_gd_places_with_units_and_show_units_true_to_top($archive_gd_place_list);
-
-    // //sort all the partner gd_places to the top
-    // $archive_gd_place_list = sort_partner_gd_places_to_top($archive_gd_place_list);
-
-    // //sort all featured gd_places to the top
-    // $archive_gd_place_list = sort_featured_gd_places_to_top($archive_gd_place_list);
 
     //if list is smaller than 10, add more gd_places
     if (count($archive_gd_place_list) < 8) {
@@ -393,50 +384,6 @@ function add_gd_places_within_radius($archive_gd_place_list, $geolocation_id, $r
     $gd_places_within_radius_ids = array_diff($gd_places_within_radius_ids, $archive_gd_place_list);
 
     $archive_gd_place_list = array_merge($archive_gd_place_list, $gd_places_within_radius_ids);
-    return $archive_gd_place_list;
-}
-
-function sort_partner_gd_places_to_top($archive_gd_place_list)
-{
-    usort($archive_gd_place_list, function ($a, $b) {
-        $partnerA = get_post_meta($a, 'partner', true) === '1' ? 1 : 0;
-        $partnerB = get_post_meta($b, 'partner', true) === '1' ? 1 : 0;
-
-        if ($partnerA == $partnerB) {
-            return 0;
-        }
-
-        return ($partnerA > $partnerB) ? -1 : 1;
-    });
-    return $archive_gd_place_list;
-}
-function sort_featured_gd_places_to_top($archive_gd_place_list)
-{
-    usort($archive_gd_place_list, function ($a, $b) {
-        $featuredA = get_post_meta($a, 'featured', true) === '1' ? 1 : 0;
-        $featuredB = get_post_meta($b, 'featured', true) === '1' ? 1 : 0;
-
-        if ($featuredA == $featuredB) {
-            return 0;
-        }
-
-        return ($featuredA > $featuredB) ? -1 : 1;
-    });
-    return $archive_gd_place_list;
-}
-
-function sort_gd_places_with_units_to_top($archive_gd_place_list)
-{
-    usort($archive_gd_place_list, function ($a, $b) {
-        $unitsA = intval(get_post_meta($a, 'num of units available', true));
-        $unitsB = intval(get_post_meta($b, 'num of units available', true));
-
-        if ($unitsA == $unitsB) {
-            return 0;
-        }
-
-        return ($unitsA > $unitsB) ? -1 : 1;
-    });
     return $archive_gd_place_list;
 }
 
